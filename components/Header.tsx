@@ -1,13 +1,12 @@
 "use client";
-import React from "react";
 import {
   SignedIn,
   SignedOut,
-  SignInButton,
   SignUpButton,
   UserButton,
 } from "@clerk/clerk-react";
-import { Sun, Moon, Cloud } from "lucide-react";
+import { Cloud, Moon, Sun } from "lucide-react";
+import React from "react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
@@ -61,7 +60,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
         className
       )}
     >
-      <div className="container mx-auto max-w-6xl flex h-16 items-center justify-between px-4 md:px-6">
+      <div className="container mx-auto max-w-6xl flex h-16 items-center justify-between px-6">
         <div className="flex items-center gap-2">
           <Link
             href="/"
@@ -76,11 +75,6 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
           <ModeToggle />
           <div className="flex items-center gap-2">
             <SignedOut>
-              <SignInButton mode="modal">
-                <Button variant="outline" size="sm">
-                  Sign in
-                </Button>
-              </SignInButton>
               <SignUpButton mode="modal">
                 <Button variant="default" size="sm">
                   Sign up

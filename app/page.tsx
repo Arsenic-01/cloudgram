@@ -10,7 +10,7 @@ const Index = () => {
 
   if (!user)
     return (
-      <div className="overflow-y-scroll flex flex-col items-center justify-start pt-20 pb-10">
+      <div className="flex flex-col items-center justify-start pt-20 pb-10">
         <SignIn />
       </div>
     );
