@@ -31,7 +31,7 @@ export function ModeToggle() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button variant="outline" className="rounded-full" size="icon">
           <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
           <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
           <span className="sr-only">Toggle theme</span>
@@ -72,12 +72,12 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
           </Link>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           <ModeToggle />
           <div className="flex items-center gap-2">
             <SignedOut>
               <SignInButton mode="modal">
-                <Button variant="ghost" size="sm">
+                <Button variant="outline" size="sm">
                   Sign in
                 </Button>
               </SignInButton>
@@ -91,7 +91,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
               <UserButton
                 appearance={{
                   elements: {
-                    userButtonAvatarBox: "h-8 w-8",
+                    userButtonAvatarBox: "h-12 w-10",
                   },
                 }}
                 afterSignOutUrl="/"

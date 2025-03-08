@@ -71,13 +71,13 @@ const FileCard: React.FC<FileCardProps> = ({
       )}
     >
       <CardContent className="p-0">
-        <div className="p-4 flex items-center justify-between group">
+        <div className="p-4 flex items-center justify-between gap-2 group">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-md bg-neutral-100 dark:bg-transparent dark:border dark:border-neutral-700 flex items-center justify-center text-primary transition-transform duration-200 group-hover:scale-105">
               {getFileIcon()}
             </div>
             <div className="flex flex-col">
-              <span className="font-medium text-sm truncate max-w-[200px] md:max-w-[300px] group-hover:text-primary transition-colors">
+              <span className="font-medium text-sm truncate max-w-[170px] md:max-w-[300px] group-hover:text-primary transition-colors">
                 {filename}
               </span>
               <span className="text-xs text-muted-foreground">

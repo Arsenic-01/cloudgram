@@ -70,10 +70,10 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-gradient-to-b from-background to-accent/30">
+    <div className="min-h-[80vh] py-8 sm:py-10">
       <Toaster position="bottom-right" richColors closeButton />
 
-      <div className="container max-w-4xl mx-auto py-12 px-4 sm:px-6">
+      <div className="container max-w-4xl mx-auto px-4 sm:px-6">
         <UploadFile />
 
         <div className="mt-16">
