@@ -1,18 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
-import { Cloud, Menu, Moon, Sun, X } from "lucide-react";
-import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { Cloud, Menu, Moon, Sun, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
+import React, { useState } from "react";
 import { Button } from "./ui/button";
-import { SignedIn, SignedOut, SignUpButton, UserButton } from "@clerk/nextjs";
 
 interface HeaderProps {
   className?: string;
@@ -92,11 +92,11 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
           <ModeToggle />
 
           <SignedOut>
-            <SignUpButton mode="modal">
+            <SignInButton mode="modal">
               <Button variant="default" size="sm">
-                Sign up
+                Sign in
               </Button>
-            </SignUpButton>
+            </SignInButton>
           </SignedOut>
           <SignedIn>
             <UserButton

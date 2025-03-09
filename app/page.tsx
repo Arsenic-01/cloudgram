@@ -1,9 +1,8 @@
 "use client";
 
 import Home from "@/components/Home";
-import { SignIn } from "@clerk/clerk-react";
+import LandingPage from "@/components/LandingPage";
 import { useUser } from "@clerk/nextjs";
-import React from "react";
 
 const Index = () => {
   const { user } = useUser();
@@ -11,7 +10,7 @@ const Index = () => {
   if (!user)
     return (
       <div className="flex flex-col items-center justify-start pt-20 pb-10">
-        <SignIn />
+        <LandingPage />
       </div>
     );
 
