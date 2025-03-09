@@ -89,9 +89,8 @@ export default function UploadFastFile() {
         setUploadStatus((prev) => ({ ...prev, [file.name]: "success" }));
         toast.success(`${file.name} uploaded successfully!`);
       } catch (error) {
-        console.error(error);
+        if (error instanceof Error) toast.error(error.message);
         setUploadStatus((prev) => ({ ...prev, [file.name]: "error" }));
-        toast.error(`Failed to upload ${file.name}.`);
       } finally {
         setUploading(false);
         setUploadQueue((prev) => prev.filter((f) => f !== file));
@@ -131,7 +130,7 @@ export default function UploadFastFile() {
         <Cloud className="mx-auto h-20 py-6 bg-white dark:bg-neutral-900 dark:border-neutral-800 border border-neutral-300 rounded-full w-20 dark:text-blue-300 text-blue-400" />
         <p className="mt-2 text-sm">Drop your files here or click to browse</p>
         <p className="mt-1 text-xs text-muted-foreground">
-          Max file size: 50 MB
+          Max file size: 50 MB | Upto 2 GB
         </p>
       </motion.div>
 

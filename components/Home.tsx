@@ -136,7 +136,7 @@ export default function Home() {
               >
                 {files.map((file, index) => (
                   <motion.div
-                    key={file.file_id || index}
+                    key={file.file_id + index}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{
                       opacity: 1,

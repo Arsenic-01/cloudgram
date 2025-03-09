@@ -147,7 +147,7 @@ export default function UploadFile() {
         <Cloud className="mx-auto h-20 py-6 bg-white dark:bg-neutral-900 dark:border-neutral-800 border border-neutral-300 rounded-full w-20 dark:text-blue-300 text-blue-400" />
         <p className="mt-2 text-sm">Drop your files here or click to browse</p>
         <p className="text-xs text-muted-foreground mt-1">
-          Upload upto 10mb each, can upload unlimited files*
+          Max file size: 50 MB | Unlimited uploads
         </p>
       </motion.div>
 

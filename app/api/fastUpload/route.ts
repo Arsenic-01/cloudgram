@@ -39,19 +39,25 @@ export async function POST(req: Request) {
     // ✅ Ensure valid file path
     const storagePath = `${uploaderId}/${fileName}`;
 
-    const { data: uploadData, error: uploadError } = await supabase.storage
+    const { data: uploadData, error } = await supabase.storage
       .from("cloudgram")
       .upload(storagePath, fileBlob);
 
-    if (uploadError) {
-      console.error("Supabase Upload Error:", uploadError);
-      throw uploadError;
+    if (error) {
+      if (error.message.includes("already exists")) {
+        return NextResponse.json(
+          { error: "File already exists" },
+          { status: 409 }
+        );
+      }
+      console.error("Supabase Upload Error:", error);
+      throw error;
     }
 
     const fileId = uploadData.path;
 
     // Store file metadata in Supabase DB
-    const { error } = await supabase.from("files").insert([
+    const { error: dbError } = await supabase.from("files").insert([
       {
         file_id: fileId,
         file_name: fileName,
@@ -60,9 +66,9 @@ export async function POST(req: Request) {
       },
     ]);
 
-    if (error) {
-      console.error("Database Insert Error:", error);
-      throw error;
+    if (dbError) {
+      console.error("Database Insert Error:", dbError);
+      throw dbError;
     }
 
     return NextResponse.json({ success: true, fileId });
