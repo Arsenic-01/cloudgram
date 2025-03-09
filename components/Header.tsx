@@ -55,11 +55,11 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 w-full border-b glass-effect transition-smooth",
+        "sticky top-0 z-50 w-full border-b glass-effect transition-smooth backdrop-blur-sm",
         className
       )}
     >
-      <div className="container mx-auto max-w-6xl flex h-16 items-center justify-between px-4 sm:px-6 backdrop-blur-sm">
+      <div className="container mx-auto max-w-6xl flex h-16 items-center justify-between px-4 sm:px-6">
         {/* Logo */}
         <div className="flex items-center gap-2">
           <Link
