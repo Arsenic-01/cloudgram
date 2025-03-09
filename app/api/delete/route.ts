@@ -10,7 +10,7 @@ export async function POST(req: Request) {
   try {
     const { fileId } = await req.json();
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("files")
       .delete({ count: "exact" })
       .eq("file_id", fileId);
@@ -18,8 +18,8 @@ export async function POST(req: Request) {
     if (error) throw error;
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
-    console.error("Upload Error:", error.message);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error) {
+    console.error("Upload Error:", error);
+    return NextResponse.json({ error: error }, { status: 500 });
   }
 }

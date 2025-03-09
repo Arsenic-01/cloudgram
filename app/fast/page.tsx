@@ -1,15 +1,15 @@
 "use client";
 import FileCard from "@/components/FileCard";
+import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
-import UploadFile from "@/components/UploadFile";
+import UploadFastFile from "@/components/UploadFastFile";
 import { useUser } from "@clerk/nextjs";
 import { AnimatePresence, motion } from "framer-motion";
 import { File, Loader2, RefreshCw, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Button } from "./ui/button";
 
-export default function Home() {
+export default function Page() {
   type FileType = {
     file_id: string;
     file_name: string;
@@ -28,13 +28,14 @@ export default function Home() {
     setError(null);
 
     try {
-      const res = await fetch("/api/files", {
+      const res = await fetch("/api/getfilefast", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ uploaderId: userId }),
+        body: JSON.stringify({ uploaderId: userId! }),
       });
 
       const data = await res.json();
+
       setFiles(data);
     } catch (error) {
       console.error("Failed to fetch files:", error);
@@ -48,19 +49,40 @@ export default function Home() {
     fetchFiles();
   }, [fetchFiles]); // ✅ Now fetchFiles is a stable dependency
 
-  const getFileUrl = async (fileId: string) => {
+  const getFileUrl = async (fileId: string, fileName: string) => {
     try {
-      const res = await fetch(`/api/getfile?file_id=${fileId}`);
-      const data = await res.json();
-      if (data.fileUrl) window.open(data.fileUrl, "_blank");
+      const res = await fetch("/api/getfastfileURL", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ file_id: fileId }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Error downloading file: ${res.statusText}`);
+      }
+
+      // Convert response to blob (binary data)
+      const blob = await res.blob();
+
+      // Create a temporary URL for downloading
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName; // Use the actual file name
+      document.body.appendChild(a);
+      a.click();
+
+      // Cleanup
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Failed to get file URL:", error);
+      console.error("Failed to download file:", error);
     }
   };
 
   const deleteFile = async (fileId: string) => {
     try {
-      const res = await fetch("/api/delete", {
+      const res = await fetch("/api/deletefast", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ fileId }),
@@ -76,11 +98,11 @@ export default function Home() {
   };
 
   return (
-    <div className="py-8 pb-20 sm:py-10">
+    <div className="py-8 sm:py-10">
       <Toaster position="bottom-right" richColors closeButton />
 
       <div className="container max-w-4xl mx-auto px-4 sm:px-6">
-        <UploadFile />
+        <UploadFastFile />
 
         <div className="mt-16">
           <div className="flex items-center justify-between mb-6">
@@ -147,7 +169,9 @@ export default function Home() {
                     <FileCard
                       onDelete={() => deleteFile(file.file_id)}
                       filename={file.file_name}
-                      onDownload={() => getFileUrl(file.file_id)}
+                      onDownload={() =>
+                        getFileUrl(file.file_id, file.file_name)
+                      } // Pass file name
                     />
                   </motion.div>
                 ))}

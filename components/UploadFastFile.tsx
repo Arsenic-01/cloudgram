@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useCallback, useEffect } from "react";
-import { useDropzone } from "react-dropzone";
-import { Cloud, Check, X, Loader2, Trash2 } from "lucide-react";
-import { motion } from "framer-motion";
-import { toast } from "sonner";
 import { useUser } from "@clerk/nextjs";
+import { motion } from "framer-motion";
+import { Check, Cloud, Loader2, Trash2, X } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { useDropzone } from "react-dropzone";
+import { toast } from "sonner";
 
-export default function UploadFile() {
+export default function UploadFastFile() {
   const [files, setFiles] = useState<File[]>([]);
   const [uploadQueue, setUploadQueue] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -65,7 +65,7 @@ export default function UploadFile() {
     },
   });
 
-  const uploadToTelegram = useCallback(
+  const uploadToSupabase = useCallback(
     async (file: File) => {
       if (!file) return;
 
@@ -74,29 +74,13 @@ export default function UploadFile() {
 
       const formData = new FormData();
       formData.append("document", file);
+      formData.append("fileName", file.name);
+      formData.append("uploaderId", user.user?.id || "");
 
       try {
-        // Upload file to Telegram
-        const tgResponse = await fetch(
-          `https://api.telegram.org/bot${process.env.NEXT_PUBLIC_BOT_TOKEN}/sendDocument?chat_id=${process.env.NEXT_PUBLIC_CHANNEL_ID}`,
-          { method: "POST", body: formData }
-        );
-
-        const tgData = await tgResponse.json();
-        if (!tgData.ok) throw new Error("Failed to upload to Telegram");
-
-        const fileId = tgData.result.document.file_id;
-
-        // Store metadata in Supabase
-        const res = await fetch("/api/upload", {
+        const res = await fetch("/api/fastUpload", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            fileId,
-            fileName: file.name,
-            type: "file",
-            uploaderId: user.user?.id,
-          }),
+          body: formData, // Remove headers, FormData sets correct Content-Type automatically
         });
 
         const data = await res.json();
@@ -118,9 +102,9 @@ export default function UploadFile() {
 
   useEffect(() => {
     if (!uploading && uploadQueue.length > 0) {
-      uploadToTelegram(uploadQueue[0]);
+      uploadToSupabase(uploadQueue[0]);
     }
-  }, [uploadQueue, uploading, uploadToTelegram]);
+  }, [uploadQueue, uploading, uploadToSupabase]);
 
   return (
     <div className="w-full max-w-lg mx-auto px-4 py-6 text-center">
@@ -129,10 +113,10 @@ export default function UploadFile() {
           Upload File
         </div>
         <h1 className="text-2xl font-bold dark:text-neutral-50 tracking-tight">
-          Share your documents securely
+          Blazing Fast File Upload ⚡
         </h1>
         <p className="text-muted-foreground dark:text-neutral-500 mt-2">
-          Drag and drop your file or browse to upload
+          Upload your files directly to S3 with a single click.
         </p>
       </div>
 
@@ -146,16 +130,16 @@ export default function UploadFile() {
         <input {...getInputProps()} />
         <Cloud className="mx-auto h-20 py-6 bg-white dark:bg-neutral-900 dark:border-neutral-800 border border-neutral-300 rounded-full w-20 dark:text-blue-300 text-blue-400" />
         <p className="mt-2 text-sm">Drop your files here or click to browse</p>
-        <p className="text-xs text-muted-foreground mt-1">
-          Upload upto 10mb each, can upload unlimited files*
+        <p className="mt-1 text-xs text-muted-foreground">
+          Max file size: 50 MB
         </p>
       </motion.div>
 
       {files.length > 0 && (
         <div className="mt-4 space-y-2">
-          {files.map((file) => (
+          {files.map((file, _) => (
             <div
-              key={file.name}
+              key={file.name + _}
               className="p-4 bg-card rounded-lg shadow-sm border flex items-center justify-between"
             >
               <div className="flex items-center gap-3">
