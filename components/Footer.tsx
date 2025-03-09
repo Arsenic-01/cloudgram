@@ -3,10 +3,10 @@ import { Github, Linkedin, ExternalLink, Cloud } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="bg-secondary/30 dark:bg-secondary/10 py-12 border-t border-t-neutral-400 dark:border-t-neutral-800">
+    <footer className="py-12 border-t border-t-neutral-400 dark:border-t-neutral-800">
       <div className="container px-4 sm:px-6 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-          <div className="md:col-span-2">
+        <div className="grid grid-cols-4 gap-8 mb-12">
+          <div className="md:col-span-2 col-span-4">
             <div className="flex items-center space-x-2 text-foreground mb-4">
               <Cloud className="h-6 w-6" strokeWidth={1.5} />
               <span className="font-medium text-xl tracking-tight">
@@ -18,27 +18,27 @@ const Footer = () => {
               Supabase to provide flexible, secure file storage for all your
               needs.
             </p>
-
-            <div className="flex space-x-4">
-              <SocialLink
-                href="https://github.com/Arsenic-01/cloudgram"
-                icon={<Github className="h-5 w-5" />}
-                label="GitHub"
-              />
-              <SocialLink
-                href="https://vedantbhor.vercel.app/"
-                icon={<ExternalLink className="h-5 w-5" />}
-                label="Portfolio"
-              />
-              <SocialLink
-                href="https://www.linkedin.com/in/vedant-bhor-39287828b/"
-                icon={<Linkedin className="h-5 w-5" />}
-                label="LinkedIn"
-              />
+            <div className="col-span-2 md:col-span-1">
+              <div className="flex space-x-4">
+                <SocialLink
+                  href="https://github.com/Arsenic-01/"
+                  icon={<Github className="h-5 w-5" />}
+                  label="GitHub"
+                />
+                <SocialLink
+                  href="https://vedantbhor.vercel.app/"
+                  icon={<ExternalLink className="h-5 w-5" />}
+                  label="Portfolio"
+                />
+                <SocialLink
+                  href="https://www.linkedin.com/in/vedant-bhor-39287828b/"
+                  icon={<Linkedin className="h-5 w-5" />}
+                  label="LinkedIn"
+                />
+              </div>
             </div>
           </div>
-
-          <div>
+          <div className="col-span-2 md:col-span-1">
             <h4 className="font-medium text-lg mb-4">Product</h4>
             <nav className="flex flex-col space-y-2">
               <FooterLink href="#features">Features</FooterLink>

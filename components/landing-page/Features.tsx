@@ -12,10 +12,7 @@ import {
 
 const Features = () => {
   return (
-    <section
-      id="features"
-      className="py-20 bg-secondary/30 dark:bg-secondary/10"
-    >
+    <section id="features" className="py-20">
       <div className="container px-4 sm:px-6 max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <div className="inline-flex items-center px-3 py-1 my-4 rounded-full bg-transparent backdrop-blur-sm border border-neutral-300 dark:border-neutral-800  text-xs font-medium tracking-wider uppercase">

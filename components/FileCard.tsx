@@ -66,14 +66,14 @@ const FileCard: React.FC<FileCardProps> = ({
   return (
     <Card
       className={cn(
-        "overflow-hidden hover:shadow-md transition-all duration-300 bg-white dark:bg-card border-border/40 dark:border-neutral-800",
+        "overflow-hidden hover:shadow-md transition-all duration-300 bg-white dark:bg-card border-neutral-300 dark:border-neutral-800",
         className
       )}
     >
       <CardContent className="p-0">
         <div className="p-2 flex items-center justify-between gap-2 group">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-md bg-neutral-100 dark:bg-transparent dark:border dark:border-neutral-700 flex items-center justify-center text-primary transition-transform duration-200 group-hover:scale-105">
+            <div className="w-10 h-10 rounded-md bg-neutral-100 dark:bg-transparent border border-neutral-200 dark:border-neutral-700 flex items-center justify-center text-primary transition-transform duration-200 group-hover:scale-105">
               {getFileIcon()}
             </div>
             <div className="flex flex-col">

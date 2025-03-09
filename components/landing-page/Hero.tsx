@@ -36,7 +36,7 @@ const Hero = () => {
             Reimagined for Modern Web
           </h1>
 
-          <p className="max-w-2xl text-base sm:text-lg md:text-xl text-foreground/80 dark:text-foreground/60 leading-relaxed text-balance">
+          <p className="max-w-2xl text-base sm:text-lg text-foreground/80 dark:text-foreground/60 leading-relaxed text-balance">
             Store unlimited files up to 50MB each through Telegram or get
             blazing fast 2GB uploads with our S3 Supabase backend. Secure,
             scalable, and incredibly simple.
