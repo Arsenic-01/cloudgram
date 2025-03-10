@@ -33,13 +33,13 @@ const Features = () => {
               <Infinity className="h-8 w-8 text-chart-1" strokeWidth={1.5} />
             }
             title="Unlimited Storage"
-            description="Store as many files as you need up to 50MB each with our Telegram backend integration."
+            description="Store as many files as you need up to 20MB each with our Telegram backend integration."
           />
 
           <FeatureCard
             icon={<Zap className="h-8 w-8 text-chart-2" strokeWidth={1.5} />}
             title="Blazing Fast S3"
-            description="Need speed? Our Supabase S3 backend delivers lightning-fast uploads and downloads up to 2GB."
+            description="Need speed? Our Supabase S3 backend delivers lightning-fast uploads and downloads up to 50MB."
           />
 
           <FeatureCard
@@ -69,8 +69,8 @@ const Features = () => {
 
         <div className="mt-20">
           <div className="glass-card rounded-2xl p-8 md:p-12">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div>
+            <div className="grid lg:grid-cols-6 md:grid-cols-2 gap-12 items-center">
+              <div className="md:cols-span-1 lg:col-span-4">
                 <h3 className="text-2xl md:text-3xl font-bold mb-6">
                   How CloudGram Works
                 </h3>
@@ -79,7 +79,7 @@ const Features = () => {
                     number="01"
                     icon={<FileUp className="h-6 w-6 text-chart-1" />}
                     title="Upload Your Files"
-                    description="Select files up to 50MB (Telegram) or 2GB (Supabase) and upload them to our secure cloud."
+                    description="Select files up to 20MB (Telegram) or 50MB (Supabase) and upload them to our secure cloud."
                   />
 
                   <StepItem
@@ -105,7 +105,7 @@ const Features = () => {
                 </div>
               </div>
 
-              <div className="relative h-full">
+              <div className="relative h-full lg:col-span-2">
                 <div className="aspect-square rounded-2xl glass p-8 flex items-center justify-center">
                   <div className="relative w-full max-w-xs mx-auto">
                     <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-chart-1/20 to-chart-2/20 rounded-xl blur-xl -z-10"></div>
@@ -155,7 +155,7 @@ interface FeatureCardProps {
 
 const FeatureCard = ({ icon, title, description }: FeatureCardProps) => (
   <div className="glass-card rounded-xl p-6 hover-scale border border-neutral-300 dark:border-neutral-800">
-    <div className="h-12 w-12 rounded-lg bg-primary/10 dark:bg-primary/5 flex items-center justify-center mb-4">
+    <div className="h-12 w-12 rounded-lg border border-neutral-300 dark:border-neutral-800  dark:bg-neutral-950 flex items-center justify-center mb-4">
       {icon}
     </div>
     <h3 className="text-xl font-semibold mb-2">{title}</h3>
@@ -174,7 +174,7 @@ const StepItem = ({ number, icon, title, description }: StepItemProps) => (
   <div className="flex space-x-4">
     <div className="flex-shrink-0">
       <div className="relative">
-        <div className="h-10 w-10 rounded-full bg-primary/10 dark:bg-primary/5 flex items-center justify-center">
+        <div className="h-10 w-10 rounded-full border border-neutral-300 dark:border-neutral-800 flex items-center justify-center">
           {icon}
         </div>
         <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-chart-1 flex items-center justify-center text-xs text-white font-medium">

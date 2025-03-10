@@ -98,7 +98,7 @@ export default function FastHome() {
   };
 
   return (
-    <div className="py-8 pb-20">
+    <div className="pt-4 lg:pt-8 pb-20">
       <Toaster position="bottom-right" richColors closeButton />
 
       <div className="container max-w-4xl mx-auto px-4 sm:px-6">

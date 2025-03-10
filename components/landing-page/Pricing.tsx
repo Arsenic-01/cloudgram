@@ -1,9 +1,11 @@
 import React from "react";
 import { Check, Cloud, Database } from "lucide-react";
+import { Button } from "../ui/button";
+import Link from "next/link";
 
 const Pricing = () => {
   return (
-    <section id="pricing" className="py-20">
+    <section id="pricing" className="pb-20">
       <div className="container px-4 sm:px-6 max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <div className="inline-flex items-center my-5 px-3 py-1 rounded-full bg-transparent backdrop-blur-sm border border-neutral-300 dark:border-neutral-800  text-xs font-medium tracking-wider uppercase">
@@ -17,7 +19,7 @@ const Pricing = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid md:grid-cols-2 px-2 gap-8 max-w-4xl mx-auto">
           <PricingCard
             icon={
               <Cloud className="h-10 w-10 text-chart-1" strokeWidth={1.5} />
@@ -27,7 +29,7 @@ const Pricing = () => {
             description="Perfect for storing many small files with unlimited capacity."
             features={[
               "Unlimited storage capacity",
-              "50MB maximum file size",
+              "20MB maximum file size",
               "Secure Telegram backend",
               "Basic file management",
               "Slower upload/download speeds",
@@ -44,7 +46,7 @@ const Pricing = () => {
             price="Free"
             description="Blazing fast storage for larger files with premium features."
             features={[
-              "2GB maximum file size",
+              "50MB maximum file size",
               "Lightning-fast transfers",
               "Secure S3 bucket storage",
               "Advanced file management",
@@ -57,19 +59,22 @@ const Pricing = () => {
 
         <div className="mt-20 text-center">
           <div className="glass-card rounded-xl p-8 max-w-3xl mx-auto">
-            <h3 className="text-2xl font-bold mb-4">Need a Custom Solution?</h3>
+            <h3 className="text-2xl md:text-3xl font-bold mb-4">
+              Let&apos;s create something amazing together?
+            </h3>
             <p className="text-foreground/80 mb-6">
-              Contact us for tailored storage solutions for your organization or
-              special needs.
+              Ready to bring your next project to life? Let&apos;s connect and
+              discuss how I can help you achieve your goals.
             </p>
-            <a
-              href="https://github.com/Arsenic-01/cloudgram"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center px-6 py-3 rounded-lg border border-border hover:bg-secondary smooth-transition"
-            >
-              Visit GitHub
-            </a>
+            <Button asChild>
+              <Link
+                href="mailto:vedantbhorofficial@gmail.com?subject=Hello%20I%27m%20____%20from%20____%20company&body=I%20want%20to%20start%20a%20new%20project%20about%20____%20and%20time%20duration%20is%20___%20days."
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Contact Me
+              </Link>
+            </Button>
           </div>
         </div>
       </div>
@@ -95,7 +100,7 @@ const PricingCard = ({
   popular,
 }: PricingCardProps) => (
   <div
-    className={`glass-card rounded-xl p-8 relative ${
+    className={`glass-card rounded-xl p-8 relative border border-neutral-300 dark:border-neutral-800 ${
       popular ? "border-chart-2 shadow-lg" : ""
     }`}
   >
@@ -105,7 +110,7 @@ const PricingCard = ({
       </div>
     )}
 
-    <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 dark:bg-primary/5 mx-auto mb-6">
+    <div className="flex items-center justify-center h-16 w-16 rounded-full border border-neutral-300 dark:border-neutral-800 mx-auto mb-6">
       {icon}
     </div>
 

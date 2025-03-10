@@ -41,7 +41,7 @@ export async function POST(req: Request) {
 
     const { data: uploadData, error } = await supabase.storage
       .from("cloudgram")
-      .upload(storagePath, fileBlob);
+      .upload(storagePath, fileBlob, { upsert: true });
 
     if (error) {
       if (error.message.includes("already exists")) {
@@ -51,7 +51,13 @@ export async function POST(req: Request) {
         );
       }
       console.error("Supabase Upload Error:", error);
-      throw error;
+      throw new Error(
+        error.message.includes("quota exceeded")
+          ? "Storage quota exceeded"
+          : error.message.includes("network error")
+          ? "Network issue, try again"
+          : error.message
+      );
     }
 
     const fileId = uploadData.path;
@@ -73,7 +79,16 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, fileId });
   } catch (error) {
-    console.error("Upload Error:", error);
-    return NextResponse.json({ error: error }, { status: 500 });
+    console.error("Upload API Error (Fast):", error);
+    if (error instanceof Error)
+      return NextResponse.json(
+        { error: error.message || "Unexpected server error" },
+        { status: 500 }
+      );
+    else
+      return NextResponse.json(
+        { error: "Unexpected server error" },
+        { status: 500 }
+      );
   }
 }

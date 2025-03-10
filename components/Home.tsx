@@ -50,11 +50,24 @@ export default function Home() {
 
   const getFileUrl = async (fileId: string) => {
     try {
-      const res = await fetch(`/api/getfile?file_id=${fileId}`);
+      const res = await fetch("/api/getfile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fileId }),
+      });
+
       const data = await res.json();
-      if (data.fileUrl) window.open(data.fileUrl, "_blank");
+
+      if (res.ok && data.fileUrl) {
+        window.open(data.fileUrl);
+        toast.success("File opened successfully!");
+      } else {
+        throw new Error(
+          data.error || "Unknown error occurred while fetching file URL"
+        );
+      }
     } catch (error) {
-      console.error("Failed to get file URL:", error);
+      toast.error(`${error}`);
     }
   };
 
@@ -76,7 +89,7 @@ export default function Home() {
   };
 
   return (
-    <div className="py-8 pb-20 sm:py-10">
+    <div className="pt-4 lg:pt-8 pb-20">
       <Toaster position="bottom-right" richColors closeButton />
 
       <div className="container max-w-4xl mx-auto px-4 sm:px-6">

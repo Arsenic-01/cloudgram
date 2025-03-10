@@ -77,7 +77,7 @@ const FileCard: React.FC<FileCardProps> = ({
               {getFileIcon()}
             </div>
             <div className="flex flex-col">
-              <span className="font-medium text-sm truncate max-w-[170px] md:max-w-[300px] group-hover:text-primary transition-colors">
+              <span className="font-medium text-sm truncate max-w-[170px] md:max-w-[300px] xl:max-w-2xl group-hover:text-primary transition-colors">
                 {filename}
               </span>
               <span className="text-xs text-muted-foreground">

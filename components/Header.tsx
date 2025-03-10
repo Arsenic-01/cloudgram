@@ -55,19 +55,19 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 w-full border-b glass-effect transition-smooth backdrop-blur-sm",
+        "sticky top-0 z-50 w-full border-b glass-effect transition-smooth md:backdrop-blur-md ",
         className
       )}
     >
-      <div className="container mx-auto max-w-6xl flex h-16 items-center justify-between px-4 sm:px-6">
+      <div className="container mx-auto max-w-6xl backdrop-blur-sm md:backdrop-blur-none flex h-16 items-center justify-between px-4 sm:px-6">
         {/* Logo */}
         <div className="flex items-center gap-2">
           <Link
             href="/"
-            className="inline-flex gap-2 items-center justify-center text-xl font-bold tracking-tight transition-smooth hover:opacity-80"
+            className="inline-flex gap-2 items-center justify-center text-lg sm:text-xl font-bold tracking-tight transition-smooth hover:opacity-80"
           >
             <Cloud className="size-8 fill-blue-300 text-blue-400" />
-            <span className="hidden sm:inline">Cloudgram</span>
+            <span>Cloudgram</span>
           </Link>
         </div>
 
@@ -129,7 +129,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
       {/* Mobile Navigation Menu */}
       <div
         className={cn(
-          "fixed inset-0 top-16 z-40 bg-background/95 backdrop-blur-sm md:hidden transition-smooth overflow-hidden",
+          "fixed inset-0 top-16 z-40 bg-background/95 backdrop-blur-md md:hidden  transition-smooth overflow-hidden",
           mobileMenuOpen
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
