@@ -52,17 +52,13 @@ cd cloudgram
 2️⃣ Install Dependencies
 
 ```sh
-Copy
-Edit
 npm install
 ```
+
 3️⃣ Set Up Environment Variables
 Create a .env.local file and add the following credentials:
 
 ```
-env
-Copy
-Edit
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 NEXT_PUBLIC_BOT_TOKEN=your_telegram_bot_token
@@ -74,11 +70,12 @@ CLERK_SECRET_KEY=your_clerk_secret_key
 4️⃣ Run the Development Server
 
 ```sh
-Copy
-Edit
 npm run dev
-Visit http://localhost:3000/ to view the app locally.
+http://localhost:3000/
 ```
+ to view the app locally.
+ 
+---
 
 ## 🤝 Contributing
 Fork the repository
@@ -87,8 +84,12 @@ Commit your changes: git commit -m "Added new feature"
 Push to your branch: git push origin feature-branch
 Submit a pull request 🎉
 
+---
+
 ## 📜 License
 This project is licensed under the MIT License.
+
+---
 
 ## 📬 Contact  
 
