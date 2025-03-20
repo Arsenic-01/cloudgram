@@ -24,7 +24,7 @@ const Footer = () => {
             </div>
             <p className="text-foreground/70 max-w-md mb-6">
               A modern cloud storage solution that leverages Telegram and
-              Supabase to provide flexible, secure file storage for all your
+              Appwrite to provide flexible, secure file storage for all your
               needs.
             </p>
             <div className="col-span-2 md:col-span-1">

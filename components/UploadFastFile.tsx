@@ -2,12 +2,18 @@
 
 import { useUser } from "@clerk/nextjs";
 import { motion } from "framer-motion";
-import { Check, Cloud, Loader2, Trash2, X } from "lucide-react";
+import { Check, Cloud, Loader2, Trash2, X, RotateCcw } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
+import uploadToAppwrite from "./FastUploadHelper";
+import { Button } from "./ui/button";
 
-export default function UploadFastFile() {
+export default function UploadFastFile({
+  refetchFiles,
+}: {
+  refetchFiles: () => void;
+}) {
   const [files, setFiles] = useState<File[]>([]);
   const [uploadStatus, setUploadStatus] = useState<
     Record<string, "idle" | "loading" | "success" | "error">
@@ -15,7 +21,8 @@ export default function UploadFastFile() {
   const [uploading, setUploading] = useState(false);
 
   const user = useUser();
-
+  const userId = user.user?.id;
+  // Handle file drop
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       const newFiles = acceptedFiles.filter(
@@ -29,95 +36,47 @@ export default function UploadFastFile() {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     multiple: true,
-    accept: {
-      "image/*": [],
-      "application/pdf": [],
-      "application/msword": [],
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-        [],
-      "application/vnd.ms-excel": [],
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [],
-      "application/vnd.ms-powerpoint": [],
-      "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-        [],
-      "text/plain": [],
-      "text/csv": [],
-      "application/json": [],
-      "application/xml": [],
-      "application/zip": [],
-      "application/x-rar-compressed": [],
-      "application/x-7z-compressed": [],
-      "audio/*": [],
-      "video/*": [],
-      "text/javascript": [], // JavaScript (.js)
-      "text/typescript": [], // TypeScript (.ts)
-      "text/x-c": [], // C (.c)
-      "text/x-c++": [], // C++ (.cpp, .cxx)
-      "text/x-java-source": [], // Java (.java)
-      "text/x-python": [], // Python (.py)
-      "text/x-ruby": [], // Ruby (.rb)
-      "text/x-php": [], // PHP (.php)
-      "text/x-shellscript": [], // Shell scripts (.sh)
-      "text/x-sql": [], // SQL (.sql)
-      "text/x-go": [], // Go (.go)
-      "text/x-lua": [], // Lua (.lua)
-      "text/x-markdown": [], // Markdown (.md)
-      "text/x-html": [], // HTML (.html, .htm)
-      "text/x-css": [], // CSS (.css)
-      "text/jsx": [], // JSX (.jsx)
-      "text/tsx": [], // TSX (.tsx)
-    },
     maxFiles: 10,
   });
 
-  const uploadToSupabase = async (file: File) => {
-    if (!file) return;
-    if (file.size > 50 * 1024 * 1024) {
-      setUploadStatus((prev) => ({ ...prev, [file.name]: "error" }));
-      toast.error(`Failed to upload ${file.name}: File size exceeds 50MB`);
-      return;
-    } // Skip files larger than 50MB
+  // Upload a single file
+  const uploadFile = async (file: File) => {
     setUploadStatus((prev) => ({ ...prev, [file.name]: "loading" }));
 
-    const formData = new FormData();
-    formData.append("document", file);
-    formData.append("fileName", file.name);
-    formData.append("uploaderId", user.user?.id || "");
-
     try {
-      const res = await fetch("/api/fastUpload", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || "Upload failed");
-
-      setUploadStatus((prev) => ({ ...prev, [file.name]: "success" }));
-      toast.success(`${file.name} uploaded successfully!`);
-
-      // ✅ Remove file from list after successful upload
-      setTimeout(() => {
-        setFiles((prev) => prev.filter((f) => f.name !== file.name));
-        setUploadStatus((prev) => {
-          const { [file.name]: _, ...rest } = prev;
-          return rest;
-        });
-      }, 1000);
+      const result = await uploadToAppwrite(file, userId!);
+      if (result.ok) {
+        setUploadStatus((prev) => ({ ...prev, [file.name]: "success" }));
+        toast.success(`${file.name} uploaded successfully!`);
+      } else {
+        throw new Error("Upload failed");
+      }
     } catch (error) {
-      let message = "Unknown error occurred.";
-      if (error instanceof Error) message = error.message;
-
       setUploadStatus((prev) => ({ ...prev, [file.name]: "error" }));
-      toast.error(`❌ ${file.name}: ${message}`);
+      console.error("Upload failed:", error);
+      toast.error(`Failed to upload ${file.name}`);
     }
   };
 
+  // Upload all files
   const startUpload = async () => {
+    if (!userId) {
+      toast.error("❌ You must be logged in to upload files.");
+      return;
+    }
+
     setUploading(true);
-    await Promise.all(files.map(uploadToSupabase));
+
+    await Promise.all(
+      files.map(async (file) => {
+        if (uploadStatus[file.name] !== "success") {
+          await uploadFile(file);
+        }
+      })
+    );
+
     setUploading(false);
+    refetchFiles(); // Refetch files from the server
   };
 
   return (
@@ -134,6 +93,7 @@ export default function UploadFastFile() {
         </p>
       </div>
 
+      {/* Dropzone */}
       <motion.div
         {...getRootProps({ onAnimationStart: undefined })}
         className={`mt-4 border-2 border-neutral-300 dark:border-neutral-800 border-dashed rounded-lg p-6 cursor-pointer transition-all ${
@@ -142,28 +102,27 @@ export default function UploadFastFile() {
         whileHover={{ scale: 1.02 }}
       >
         <input {...getInputProps()} />
-        <Cloud className="mx-auto h-20 py-6 bg-white dark:bg-neutral-900 dark:border-neutral-800 border border-neutral-300 rounded-full w-20 dark:text-blue-300 text-blue-400" />
-        <p className="mt-2 text-sm">Drop your files here or click to browse</p>
-        <p className="mt-1 text-xs text-muted-foreground">
+        <Cloud className="mx-auto h-20 py-6 dark:border-neutral-800 border border-neutral-300 rounded-full w-20 text-blue-400" />
+        <p className="mt-2 text-sm">Drop files here or click to browse</p>
+        <p className="text-xs text-muted-foreground mt-1">
           Max file size: 50 MB | Max files: 10
         </p>
       </motion.div>
 
+      {/* File List */}
       {files.length > 0 && (
         <div className="mt-4 space-y-2">
-          {files.map((file) => (
+          {files.map((file, index) => (
             <div
-              key={file.name}
-              className="p-4 bg-card rounded-lg shadow-sm border flex items-center justify-between"
+              key={index}
+              className="p-4 bg-card rounded-lg border flex items-center justify-between"
             >
-              <div className="flex items-center gap-3">
-                <p className="font-medium text-sm truncate max-w-[200px]">
-                  {file.name}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {(file.size / 1024 / 1024).toFixed(2)} MB
-                </p>
-              </div>
+              <p className="font-medium text-sm truncate max-w-[200px]">
+                {file.name}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {(file.size / (1024 * 1024)).toFixed(2)} MB
+              </p>
               <div className="flex items-center gap-2">
                 {uploadStatus[file.name] === "loading" && (
                   <Loader2 className="h-4 w-4 text-primary animate-spin" />
@@ -172,13 +131,21 @@ export default function UploadFastFile() {
                   <Check className="h-4 w-4 text-green-500" />
                 )}
                 {uploadStatus[file.name] === "error" && (
-                  <X className="h-4 w-4 text-red-500" />
+                  <>
+                    <X className="h-4 w-4 text-red-500" />
+                    <button
+                      onClick={() => uploadFile(file)}
+                      className="p-1 rounded-full bg-muted/50 hover:bg-muted transition-colors"
+                    >
+                      <RotateCcw className="h-4 w-4 text-blue-500" />
+                    </button>
+                  </>
                 )}
                 <button
                   onClick={() =>
                     setFiles((prev) => prev.filter((f) => f.name !== file.name))
                   }
-                  className="p-2 rounded-full bg-muted/50 hover:bg-muted transition-colors"
+                  className="p-2 rounded-full bg-muted/50 hover:bg-muted"
                 >
                   <Trash2 className="h-4 w-4 text-muted-foreground" />
                 </button>
@@ -188,27 +155,32 @@ export default function UploadFastFile() {
         </div>
       )}
 
+      {/* Upload & Discard Buttons */}
       {files.length > 0 && (
         <div className="flex justify-center mt-4 gap-3">
-          <button
+          <Button
             onClick={startUpload}
-            disabled={uploading || files.length === 0}
-            className={`px-4 py-2 rounded-lg shadow-md ${
-              files.length === 0 || uploading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-500 text-white"
-            }`}
+            disabled={
+              uploading ||
+              files.every((file) => uploadStatus[file.name] === "success")
+            }
           >
-            {uploading ? "Uploading..." : "Upload"}
-          </button>
+            {uploading
+              ? "Uploading..."
+              : files.every((file) => uploadStatus[file.name] === "success")
+              ? "All Uploaded"
+              : "Upload Files"}
+          </Button>
 
-          <button
-            onClick={() => setFiles([])}
-            disabled={files.length === 0}
-            className="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md"
+          <Button
+            onClick={() => {
+              setFiles([]);
+              setUploadStatus({});
+            }}
+            variant={"destructive"}
           >
             Discard All
-          </button>
+          </Button>
         </div>
       )}
     </div>

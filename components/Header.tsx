@@ -105,7 +105,6 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
                   userButtonAvatarBox: "h-12 w-10",
                 },
               }}
-              afterSignOutUrl="/"
             />
           </SignedIn>
 

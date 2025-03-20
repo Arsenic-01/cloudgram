@@ -42,7 +42,7 @@ const Pricing = () => {
             icon={
               <Database className="h-10 w-10 text-chart-2" strokeWidth={1.5} />
             }
-            title="Supabase S3"
+            title="Appwrite S3"
             price="Free"
             description="Blazing fast storage for larger files with premium features."
             features={[

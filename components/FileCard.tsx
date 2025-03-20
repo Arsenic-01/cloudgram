@@ -8,19 +8,23 @@ import {
   FileArchive,
   FileBox,
   Trash,
+  FileInput,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
+import Link from "next/link";
 
 interface FileCardProps {
+  fileId?: string;
   filename: string;
   onDelete: () => void;
-  onDownload: () => void;
+  onDownload?: () => void;
   className?: string;
 }
 
 const FileCard: React.FC<FileCardProps> = ({
+  fileId,
   filename,
   onDownload,
   onDelete,
@@ -86,13 +90,43 @@ const FileCard: React.FC<FileCardProps> = ({
             </div>
           </div>
           <div className="flex gap-2 justify-between items-center">
-            <Button
-              variant={"outline"}
-              onClick={onDownload}
-              aria-label={`Download ${filename}`}
-            >
-              <Download className="h-4 w-4 text-green-600 dark:text-green-400" />
-            </Button>
+            {onDownload && (
+              <Button
+                onClick={onDownload}
+                variant={"outline"}
+                aria-label={`Download ${filename}`}
+              >
+                <Download className="h-4 w-4 text-green-600 dark:text-green-400" />
+              </Button>
+            )}
+            {!onDownload && (
+              <>
+                <Button
+                  variant={"outline"}
+                  aria-label={`View ${filename}`}
+                  asChild
+                >
+                  <Link
+                    target="_blank"
+                    href={`https://cloud.appwrite.io/v1/storage/buckets/67dbc57500332a2ceea0/files/${fileId}/view?project=6720b2e90009d3a26528`}
+                  >
+                    <FileInput className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  </Link>
+                </Button>
+                <Button
+                  variant={"outline"}
+                  aria-label={`Download ${filename}`}
+                  asChild
+                >
+                  <Link
+                    target="_blank"
+                    href={`https://cloud.appwrite.io/v1/storage/buckets/67dbc57500332a2ceea0/files/${fileId}/download?project=6720b2e90009d3a26528`}
+                  >
+                    <Download className="h-4 w-4 text-green-600 dark:text-green-400" />
+                  </Link>
+                </Button>
+              </>
+            )}
             <Button
               onClick={onDelete}
               variant={"outline"}

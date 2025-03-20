@@ -39,7 +39,7 @@ const Features = () => {
           <FeatureCard
             icon={<Zap className="h-8 w-8 text-chart-2" strokeWidth={1.5} />}
             title="Blazing Fast S3"
-            description="Need speed? Our Supabase S3 backend delivers lightning-fast uploads and downloads up to 50MB."
+            description="Need speed? Our Appwrite S3 backend delivers lightning-fast uploads and downloads up to 50MB."
           />
 
           <FeatureCard
@@ -63,7 +63,7 @@ const Features = () => {
           <FeatureCard
             icon={<Cloud className="h-8 w-8 text-chart-1" strokeWidth={1.5} />}
             title="Dual Backend"
-            description="Choose between Telegram or Supabase storage backends based on your specific needs."
+            description="Choose between Telegram or Appwrite storage backends based on your specific needs."
           />
         </div>
 
@@ -79,14 +79,14 @@ const Features = () => {
                     number="01"
                     icon={<FileUp className="h-6 w-6 text-chart-1" />}
                     title="Upload Your Files"
-                    description="Select files up to 20MB (Telegram) or 50MB (Supabase) and upload them to our secure cloud."
+                    description="Select files up to 20MB (Telegram) or 50MB (Appwrite) and upload them to our secure cloud."
                   />
 
                   <StepItem
                     number="02"
                     icon={<Server className="h-6 w-6 text-chart-2" />}
                     title="Cloud Processing"
-                    description="Files are securely processed and stored in either Telegram channels or Supabase S3 buckets."
+                    description="Files are securely processed and stored in either Telegram channels or Appwrite S3 buckets."
                   />
 
                   <StepItem

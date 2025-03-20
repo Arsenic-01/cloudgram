@@ -3,6 +3,7 @@ import FileCard from "@/components/FileCard";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
 import UploadFastFile from "@/components/UploadFastFile";
+import { deleteFastFile, getFastFiles } from "@/lib/files.actions";
 import { useUser } from "@clerk/nextjs";
 import { AnimatePresence, motion } from "framer-motion";
 import { File, Loader2, RefreshCw, X } from "lucide-react";
@@ -11,6 +12,9 @@ import { toast } from "sonner";
 
 export default function FastHome() {
   type FileType = {
+    id: string;
+    timestamp: string;
+    storage_type: string;
     file_id: string;
     file_name: string;
     uploader_id: string;
@@ -28,15 +32,11 @@ export default function FastHome() {
     setError(null);
 
     try {
-      const res = await fetch("/api/getfilefast", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ uploaderId: userId! }),
-      });
-
-      const data = await res.json();
-
-      setFiles(data);
+      const data = await getFastFiles(userId!);
+      console.log("data", data);
+      if (data) {
+        setFiles(data);
+      }
     } catch (error) {
       console.error("Failed to fetch files:", error);
       setError("Failed to load your files. Please try again later.");
@@ -47,48 +47,15 @@ export default function FastHome() {
 
   useEffect(() => {
     fetchFiles();
-  }, [fetchFiles]); // ✅ Now fetchFiles is a stable dependency
+  }, [fetchFiles]);
 
-  const getFileUrl = async (fileId: string, fileName: string) => {
+  const deleteFile = async (id: string, fileId: string) => {
     try {
-      const res = await fetch("/api/getfastfileURL", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ file_id: fileId }),
-      });
+      console.log(id, fileId);
 
-      if (!res.ok) {
-        throw new Error(`Error downloading file: ${res.statusText}`);
-      }
-
-      // Convert response to blob (binary data)
-      const blob = await res.blob();
-
-      // Create a temporary URL for downloading
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = fileName; // Use the actual file name
-      document.body.appendChild(a);
-      a.click();
-
-      // Cleanup
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Failed to download file:", error);
-    }
-  };
-
-  const deleteFile = async (fileId: string) => {
-    try {
-      const res = await fetch("/api/deletefast", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fileId }),
-      });
-      const data = await res.json();
-      if (data.success) {
+      const res = deleteFastFile(id, fileId);
+      console.log("RES +", res);
+      if ((await res).ok) {
         toast.success("File deleted successfully!");
         fetchFiles();
       }
@@ -102,7 +69,7 @@ export default function FastHome() {
       <Toaster position="bottom-right" richColors closeButton />
 
       <div className="container max-w-4xl mx-auto px-4 sm:px-6">
-        <UploadFastFile />
+        <UploadFastFile refetchFiles={fetchFiles} />
 
         <div className="mt-16">
           <div className="flex items-center justify-between mb-6">
@@ -158,7 +125,7 @@ export default function FastHome() {
               >
                 {files.map((file, index) => (
                   <motion.div
-                    key={file.file_id || index}
+                    key={index}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{
                       opacity: 1,
@@ -167,11 +134,9 @@ export default function FastHome() {
                     }}
                   >
                     <FileCard
-                      onDelete={() => deleteFile(file.file_id)}
+                      onDelete={() => deleteFile(file.id, file.file_id)}
                       filename={file.file_name}
-                      onDownload={() =>
-                        getFileUrl(file.file_id, file.file_name)
-                      } // Pass file name
+                      fileId={file.file_id}
                     />
                   </motion.div>
                 ))}
