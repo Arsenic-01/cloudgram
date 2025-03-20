@@ -6,8 +6,13 @@ import { Cloud, Check, X, Loader2, Trash2, RotateCcw } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useUser } from "@clerk/nextjs";
+import { Button } from "./ui/button";
 
-export default function UploadFile() {
+export default function UploadFile({
+  refetchFiles,
+}: {
+  refetchFiles: () => void;
+}) {
   const [files, setFiles] = useState<File[]>([]);
   const [uploadStatus, setUploadStatus] = useState<
     Record<string, "idle" | "loading" | "success" | "error">
@@ -120,6 +125,7 @@ export default function UploadFile() {
 
         setUploadStatus((prev) => ({ ...prev, [file.name]: "success" }));
         toast.success(`${file.name} uploaded successfully!`);
+        refetchFiles();
       } catch (error) {
         setUploadStatus((prev) => ({ ...prev, [file.name]: "error" }));
         toast.error(`Failed to upload ${file.name}: ${error}`);
@@ -148,7 +154,7 @@ export default function UploadFile() {
   return (
     <div className="w-full max-w-lg mx-auto px-4 py-6 text-center">
       <div className="mb-6">
-        <div className="inline-block text-xs font-medium px-3 py-1 bg-neutral-50 dark:bg-neutral-800 dark:border-neutral-800 dark:text-blue-300 border border-neutral-300 text-blue-500 rounded-full mb-2">
+        <div className="inline-block text-xs font-medium px-3 py-1 bg-neutral-50 dark:bg-neutral-800 dark:border-neutral-700 dark:text-blue-300 border border-neutral-300 text-blue-500 rounded-full mb-2">
           Upload File
         </div>
         <h1 className="text-2xl font-bold dark:text-neutral-50 tracking-tight">
@@ -186,6 +192,9 @@ export default function UploadFile() {
               <p className="font-medium text-sm truncate max-w-[200px]">
                 {file.name}
               </p>
+              <p className="text-xs text-muted-foreground">
+                {(file.size / (1024 * 1024)).toFixed(2)} MB
+              </p>
               <div className="flex items-center gap-2">
                 {uploadStatus[file.name] === "loading" ? (
                   <Loader2 className="animate-spin h-5 w-5 text-yellow-500" />
@@ -217,29 +226,24 @@ export default function UploadFile() {
       {/* Upload & Discard Buttons */}
       {files.length > 0 && (
         <div className="flex justify-center mt-4 gap-3">
-          <button
+          <Button
             onClick={uploadFiles}
             disabled={uploading || allFilesUploaded}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-              uploading || allFilesUploaded
-                ? "bg-gray-400 text-gray-700 cursor-not-allowed"
-                : "bg-blue-500 text-white"
-            }`}
           >
             {uploading
               ? "Uploading..."
               : allFilesUploaded
               ? "All Uploaded"
               : "Upload Files"}
-          </button>
+          </Button>
 
-          <button
+          <Button
             onClick={() => setFiles([])}
             disabled={files.length === 0}
-            className="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md"
+            variant="outline"
           >
             Discard All
-          </button>
+          </Button>
         </div>
       )}
     </div>

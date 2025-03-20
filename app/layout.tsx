@@ -1,10 +1,11 @@
+import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
-import Footer from "@/components/Footer";
+import Providers from "./Providers";
 
 const dm_sans = DM_Sans({
   subsets: ["latin"],
@@ -46,9 +47,11 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <Header />
-            <main className="min-h-screen">{children}</main>
-            <Footer />
+            <Providers>
+              <Header />
+              <main className="min-h-screen">{children}</main>
+              <Footer />
+            </Providers>
           </ThemeProvider>
         </body>
       </html>

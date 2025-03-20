@@ -16,6 +16,7 @@ export async function POST(req: Request) {
         file_name: fileName,
         uploader_id: uploaderId,
         storage_type: "telegram",
+        timestamp: new Date().toISOString(),
       },
     ]);
 

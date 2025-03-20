@@ -20,7 +20,8 @@ export async function POST(req: Request) {
       .from("files")
       .select("*")
       .eq("uploader_id", uploaderId)
-      .eq("storage_type", "telegram");
+      .eq("storage_type", "telegram")
+      .order("timestamp", { ascending: false });
 
     if (error) {
       throw error;

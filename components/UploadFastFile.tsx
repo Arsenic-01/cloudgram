@@ -82,7 +82,7 @@ export default function UploadFastFile({
   return (
     <div className="w-full max-w-lg mx-auto px-4 py-6 text-center">
       <div className="mb-6">
-        <div className="inline-block text-xs font-medium px-3 py-1 bg-neutral-50 dark:bg-neutral-800 dark:border-neutral-800 dark:text-blue-300 border border-neutral-300 text-blue-500 rounded-full mb-2">
+        <div className="inline-block text-xs font-medium px-3 py-1 bg-neutral-50 dark:bg-neutral-800 dark:border-neutral-700 dark:text-blue-300 border border-neutral-300 text-blue-500 rounded-full mb-2">
           Upload File
         </div>
         <h1 className="text-2xl font-bold dark:text-neutral-50 tracking-tight">
@@ -97,7 +97,9 @@ export default function UploadFastFile({
       <motion.div
         {...getRootProps({ onAnimationStart: undefined })}
         className={`mt-4 border-2 border-neutral-300 dark:border-neutral-800 border-dashed rounded-lg p-6 cursor-pointer transition-all ${
-          isDragActive ? "border-primary bg-primary/10" : "border-muted"
+          isDragActive
+            ? "border-primary bg-neutral-50 dark:bg-neutral-900"
+            : "border-muted"
         }`}
         whileHover={{ scale: 1.02 }}
       >
@@ -177,7 +179,7 @@ export default function UploadFastFile({
               setFiles([]);
               setUploadStatus({});
             }}
-            variant={"destructive"}
+            variant={"outline"}
           >
             Discard All
           </Button>

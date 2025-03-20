@@ -21,6 +21,7 @@ interface FileCardProps {
   onDelete: () => void;
   onDownload?: () => void;
   className?: string;
+  timestamp: string;
 }
 
 const FileCard: React.FC<FileCardProps> = ({
@@ -28,8 +29,15 @@ const FileCard: React.FC<FileCardProps> = ({
   filename,
   onDownload,
   onDelete,
+  timestamp,
   className,
 }) => {
+  const formattedDate = new Intl.DateTimeFormat("en-IN", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "Asia/Kolkata",
+  }).format(new Date(timestamp));
+
   // Detect file type based on extension
   const getFileIcon = () => {
     const extension = filename.split(".").pop()?.toLowerCase();
@@ -81,11 +89,19 @@ const FileCard: React.FC<FileCardProps> = ({
               {getFileIcon()}
             </div>
             <div className="flex flex-col">
-              <span className="font-medium text-sm truncate max-w-[170px] md:max-w-[300px] xl:max-w-2xl group-hover:text-primary transition-colors">
+              <span
+                className={`font-medium text-sm truncate md:max-w-[300px] xl:max-w-2xl group-hover:text-primary transition-colors ${
+                  onDownload ? " max-w-[170px]" : "max-w-[120px]"
+                }`}
+              >
                 {filename}
               </span>
-              <span className="text-xs text-muted-foreground">
-                {new Date().toLocaleDateString()}
+              <span
+                className={`text-xs text-muted-foreground ${
+                  onDownload ? " max-w-[170px]" : "max-w-[125px]"
+                }`}
+              >
+                {formattedDate}
               </span>
             </div>
           </div>

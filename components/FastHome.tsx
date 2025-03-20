@@ -1,4 +1,5 @@
 "use client";
+
 import FileCard from "@/components/FileCard";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
@@ -7,82 +8,69 @@ import { deleteFastFile, getFastFiles } from "@/lib/files.actions";
 import { useUser } from "@clerk/nextjs";
 import { AnimatePresence, motion } from "framer-motion";
 import { File, Loader2, RefreshCw, X } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 export default function FastHome() {
-  type FileType = {
-    id: string;
-    timestamp: string;
-    storage_type: string;
-    file_id: string;
-    file_name: string;
-    uploader_id: string;
-  };
+  // type FileType = {
+  //   id: string;
+  //   timestamp: string;
+  //   storage_type: string;
+  //   file_id: string;
+  //   file_name: string;
+  //   uploader_id: string;
+  // };
 
-  const [files, setFiles] = useState<FileType[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { user } = useUser();
+  const userId = user?.id;
+  const queryClient = useQueryClient();
 
-  const user = useUser();
-  const userId = user.user?.id;
+  // Fetch files using React Query
+  const {
+    data: files = [],
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["fastFiles", userId],
+    queryFn: () => getFastFiles(userId!),
+    enabled: !!userId, // Prevents execution if userId is undefined
+  });
 
-  const fetchFiles = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const data = await getFastFiles(userId!);
-      console.log("data", data);
-      if (data) {
-        setFiles(data);
-      }
-    } catch (error) {
-      console.error("Failed to fetch files:", error);
-      setError("Failed to load your files. Please try again later.");
-    } finally {
-      setLoading(false);
-    }
-  }, [userId]);
-
-  useEffect(() => {
-    fetchFiles();
-  }, [fetchFiles]);
-
-  const deleteFile = async (id: string, fileId: string) => {
-    try {
-      console.log(id, fileId);
-
-      const res = deleteFastFile(id, fileId);
-      console.log("RES +", res);
-      if ((await res).ok) {
-        toast.success("File deleted successfully!");
-        fetchFiles();
-      }
-    } catch (error) {
-      console.error("Failed to delete file:", error);
-    }
-  };
+  // Delete file mutation
+  const deleteMutation = useMutation({
+    mutationFn: async ({ id, fileId }: { id: string; fileId: string }) => {
+      const res = await deleteFastFile(id, fileId);
+      if (!res.ok) throw new Error("Failed to delete file");
+    },
+    onSuccess: () => {
+      toast.success("File deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["fastFiles", userId] }); // Refresh files
+    },
+    onError: () => {
+      toast.error("Failed to delete file. Please try again.");
+    },
+  });
 
   return (
     <div className="pt-4 lg:pt-8 pb-20">
       <Toaster position="bottom-right" richColors closeButton />
 
       <div className="container max-w-4xl mx-auto px-4 sm:px-6">
-        <UploadFastFile refetchFiles={fetchFiles} />
+        <UploadFastFile refetchFiles={refetch} />
 
         <div className="mt-16">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold tracking-tight">Your Files</h2>
             {files.length > 0 && (
-              <Button variant="outline" onClick={fetchFiles}>
+              <Button variant="outline" onClick={() => refetch()}>
                 <span>Refresh</span> <RefreshCw className="h-3 w-3" />
               </Button>
             )}
           </div>
 
           <AnimatePresence mode="wait">
-            {loading ? (
+            {isLoading ? (
               <motion.div
                 key="loading"
                 initial={{ opacity: 0 }}
@@ -107,15 +95,14 @@ export default function FastHome() {
                 <h3 className="text-lg font-medium mb-1">
                   Error loading files
                 </h3>
-                <p className="text-muted-foreground mb-6">{error}</p>
-                <button
-                  onClick={fetchFiles}
-                  className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
-                >
+                <p className="text-muted-foreground mb-6">
+                  Failed to load your files. Please try again later.
+                </p>
+                <Button variant="outline" onClick={() => refetch()}>
                   Try Again
-                </button>
+                </Button>
               </motion.div>
-            ) : files.length > 0 ? (
+            ) : files?.length > 0 ? (
               <motion.div
                 key="files"
                 initial={{ opacity: 0 }}
@@ -125,7 +112,7 @@ export default function FastHome() {
               >
                 {files.map((file, index) => (
                   <motion.div
-                    key={index}
+                    key={file.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{
                       opacity: 1,
@@ -134,7 +121,13 @@ export default function FastHome() {
                     }}
                   >
                     <FileCard
-                      onDelete={() => deleteFile(file.id, file.file_id)}
+                      timestamp={file.timestamp}
+                      onDelete={() =>
+                        deleteMutation.mutate({
+                          id: file.id,
+                          fileId: file.file_id,
+                        })
+                      }
                       filename={file.file_name}
                       fileId={file.file_id}
                     />
@@ -156,7 +149,7 @@ export default function FastHome() {
                 <p className="text-muted-foreground mb-6">
                   Upload your first file to get started
                 </p>
-                <Button variant="outline" onClick={fetchFiles}>
+                <Button variant="outline" onClick={() => refetch()}>
                   <span>Refresh</span> <RefreshCw className="h-3 w-3" />
                 </Button>
               </motion.div>

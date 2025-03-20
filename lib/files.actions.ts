@@ -15,7 +15,7 @@ export async function getFastFiles(userId: string) {
     const res = databases.listDocuments(
       process.env.NEXT_PUBLIC_APPWRITE_DB!,
       process.env.NEXT_PUBLIC_APPWRITE_FILE_COLLECTION_ID!,
-      [Query.equal("user_id", userId)]
+      [Query.equal("user_id", userId), Query.orderDesc("$createdAt")]
     );
 
     console.log(res); // Resource URL
@@ -32,6 +32,7 @@ export async function getFastFiles(userId: string) {
     });
   } catch (error) {
     console.error(error);
+    return [];
   }
 }
 

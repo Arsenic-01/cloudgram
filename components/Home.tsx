@@ -5,49 +5,57 @@ import UploadFile from "@/components/UploadFile";
 import { useUser } from "@clerk/nextjs";
 import { AnimatePresence, motion } from "framer-motion";
 import { File, Loader2, RefreshCw, X } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export default function Home() {
   type FileType = {
+    id: string;
+    timestamp: string;
+    storage_type: string;
     file_id: string;
     file_name: string;
     uploader_id: string;
   };
 
-  const [files, setFiles] = useState<FileType[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
   const user = useUser();
   const userId = user.user?.id;
 
-  const fetchFiles = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+  // QueryClient for refetching after deletion
+  const queryClient = useQueryClient();
 
-    try {
-      const res = await fetch("/api/files", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ uploaderId: userId }),
-      });
+  // Fetch files function
+  const fetchFiles = async () => {
+    const res = await fetch("/api/files", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ uploaderId: userId }),
+    });
 
-      const data = await res.json();
-      setFiles(data);
-    } catch (error) {
-      console.error("Failed to fetch files:", error);
-      setError("Failed to load your files. Please try again later.");
-    } finally {
-      setLoading(false);
+    if (!res.ok) {
+      throw new Error("Failed to load files");
     }
-  }, [userId]);
 
-  useEffect(() => {
-    fetchFiles();
-  }, [fetchFiles]); // ✅ Now fetchFiles is a stable dependency
+    return res.json();
+  };
 
+  // UseQuery for fetching files
+  const {
+    data: files = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["files", userId], // Cache based on userId
+    queryFn: fetchFiles,
+    enabled: !!userId, // Only fetch when userId exists
+    staleTime: 1000 * 60 * 5, // Cache files for 5 minutes
+    retry: 2, // Retry fetching twice on failure
+  });
+
+  // Function to get file URL
   const getFileUrl = async (fileId: string) => {
     try {
       const res = await fetch("/api/getfile", {
@@ -71,6 +79,7 @@ export default function Home() {
     }
   };
 
+  // Function to delete a file
   const deleteFile = async (fileId: string) => {
     try {
       const res = await fetch("/api/delete", {
@@ -79,12 +88,16 @@ export default function Home() {
         body: JSON.stringify({ fileId }),
       });
       const data = await res.json();
+
       if (data.success) {
         toast.success("File deleted successfully!");
-        fetchFiles();
+        queryClient.invalidateQueries({ queryKey: ["files", userId] });
+      } else {
+        throw new Error("Failed to delete file");
       }
     } catch (error) {
       console.error("Failed to delete file:", error);
+      toast.error("Failed to delete file. Please try again.");
     }
   };
 
@@ -93,20 +106,20 @@ export default function Home() {
       <Toaster position="bottom-right" richColors closeButton />
 
       <div className="container max-w-4xl mx-auto px-4 sm:px-6">
-        <UploadFile />
+        <UploadFile refetchFiles={refetch} />
 
         <div className="mt-16">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold tracking-tight">Your Files</h2>
             {files.length > 0 && (
-              <Button variant="outline" onClick={fetchFiles}>
+              <Button variant="outline" onClick={() => refetch()}>
                 <span>Refresh</span> <RefreshCw className="h-3 w-3" />
               </Button>
             )}
           </div>
 
           <AnimatePresence mode="wait">
-            {loading ? (
+            {isLoading ? (
               <motion.div
                 key="loading"
                 initial={{ opacity: 0 }}
@@ -117,7 +130,7 @@ export default function Home() {
                 <Loader2 className="h-8 w-8 text-primary animate-spin mb-4" />
                 <p className="text-muted-foreground">Loading your files...</p>
               </motion.div>
-            ) : error ? (
+            ) : isError ? (
               <motion.div
                 key="error"
                 initial={{ opacity: 0 }}
@@ -131,13 +144,12 @@ export default function Home() {
                 <h3 className="text-lg font-medium mb-1">
                   Error loading files
                 </h3>
-                <p className="text-muted-foreground mb-6">{error}</p>
-                <button
-                  onClick={fetchFiles}
-                  className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
-                >
-                  Try Again
-                </button>
+                <p className="text-muted-foreground mb-6">
+                  {error?.message || "Something went wrong"}
+                </p>
+                <Button variant="outline" onClick={() => refetch()}>
+                  <span>Try Again</span>
+                </Button>
               </motion.div>
             ) : files.length > 0 ? (
               <motion.div
@@ -147,7 +159,7 @@ export default function Home() {
                 exit={{ opacity: 0 }}
                 className="grid gap-3"
               >
-                {files.map((file, index) => (
+                {files.map((file: FileType, index: number) => (
                   <motion.div
                     key={file.file_id + index}
                     initial={{ opacity: 0, y: 20 }}
@@ -158,6 +170,7 @@ export default function Home() {
                     }}
                   >
                     <FileCard
+                      timestamp={file.timestamp}
                       onDelete={() => deleteFile(file.file_id)}
                       filename={file.file_name}
                       onDownload={() => getFileUrl(file.file_id)}
@@ -180,7 +193,7 @@ export default function Home() {
                 <p className="text-muted-foreground mb-6">
                   Upload your first file to get started
                 </p>
-                <Button variant="outline" onClick={fetchFiles}>
+                <Button variant="outline" onClick={() => refetch()}>
                   <span>Refresh</span> <RefreshCw className="h-3 w-3" />
                 </Button>
               </motion.div>
