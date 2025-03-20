@@ -1,6 +1,6 @@
 # ☁️ Cloudgram  
 
-A **secure and fast cloud platform** that allows users to **upload and store files** using **Telegram API** and **Supabase storage**.  
+A **secure and fast cloud platform** that allows users to **upload and store files** using **Telegram API** and **Appwrite storage**.  
 
 🔗 **Live Website:** [Cloudgram](https://cloudgram-01.vercel.app/)  
 🔗 **Source Code:** [GitHub Repository](https://github.com/Arsenic-01/cloudgram)  
@@ -19,7 +19,8 @@ I needed to print a document from my college lab’s PC, but there was no easy w
 ## 🌟 Features  
 
 ✅ **Telegram API Storage** – Upload **10 files at once**, max **20MB per file**, with **end-to-end encryption**.  
-✅ **Supabase Storage** – Upload **20 files at once**, max **50MB per file**, stored in an **S3 bucket**.  
+✅ **Supabase Database** - Stores the Telegram file **metadata** in a PostgreSQL database to ensure platform independence in case of a failure.
+✅ **Appwrite Storage** – Upload **20 files at once**, max **50MB per file**, stored in an **S3 bucket**.  
 ✅ **Secure Authentication** – Sign in with **Google, Magic Link, or Username/Password** via **Clerk**.  
 ✅ **Fast & Responsive** – Built with the latest web technologies for a smooth experience.  
 
@@ -33,7 +34,8 @@ I needed to print a document from my college lab’s PC, but there was no easy w
 
 ### **Backend & Storage:**  
 - 📲 **Telegram API** + Custom **Python Bot**  
-- 📦 **Supabase (Database & Storage)**  
+- 📦 **Supabase (Database)**
+- 🖥️ **Appwrite (Storage + Database)**
 - 🔐 **Clerk (Authentication)**  
 
 ### **State Management:**  
@@ -65,6 +67,11 @@ NEXT_PUBLIC_BOT_TOKEN=your_telegram_bot_token
 NEXT_PUBLIC_CHANNEL_ID=your_telegram_channel_id
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
 CLERK_SECRET_KEY=your_clerk_secret_key
+NEXT_PUBLIC_APPWRITE_PROJECT_ID=
+NEXT_PUBLIC_APPWRITE_DB=
+NEXT_PUBLIC_APPWRITE_FILE_COLLECTION_ID=
+NEXT_PUBLIC_APPWRITE_STORAGE_BUCKET=
+
 ```
 
 4️⃣ Run the Development Server
