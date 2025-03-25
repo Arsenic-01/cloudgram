@@ -55,6 +55,7 @@ const Footer = () => {
           <div className="col-span-2 md:col-span-1">
             <h4 className="font-medium text-lg mb-4">Product</h4>
             <nav className="flex flex-col space-y-2">
+              <FooterLink href="/public">Public</FooterLink>
               <FooterLink href="#features">Features</FooterLink>
               <FooterLink href="#pricing">Pricing</FooterLink>
             </nav>

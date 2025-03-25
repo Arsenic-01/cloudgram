@@ -67,7 +67,9 @@ export default function Home() {
       const data = await res.json();
 
       if (res.ok && data.fileUrl) {
-        window.open(data.fileUrl);
+        setTimeout(() => {
+          window.open(data.fileUrl, "_blank");
+        }, 100);
         toast.success("File opened successfully!");
       } else {
         throw new Error(

@@ -1,6 +1,7 @@
 import { SignUpButton } from "@clerk/nextjs";
 import { ArrowRight, Heart } from "lucide-react";
 import { Button } from "../ui/button";
+import PublicButton from "../misc/PublicButton";
 
 const Hero = () => {
   return (
@@ -36,13 +37,14 @@ const Hero = () => {
 
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <SignUpButton mode="modal">
-              <Button className="py-3 w-full">
+              <Button className="py-3">
                 <div className="flex items-center justify-center px-3">
                   Get Started
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="size-4 ml-2 -rotate-45" />
                 </div>
               </Button>
             </SignUpButton>
+            <PublicButton />
           </div>
         </div>
       </div>

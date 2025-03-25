@@ -104,7 +104,7 @@ export default function UploadFastFile({
         whileHover={{ scale: 1.02 }}
       >
         <input {...getInputProps()} />
-        <Cloud className="mx-auto h-20 py-6 dark:border-neutral-800 border border-neutral-300 rounded-full w-20 text-blue-400" />
+        <Cloud className="mx-auto h-20 py-6 dark:border-neutral-800 border border-neutral-300 rounded-full w-20 text-blue-400 dark:bg-neutral-900" />
         <p className="mt-2 text-sm">Drop files here or click to browse</p>
         <p className="text-xs text-muted-foreground mt-1">
           Max file size: 50 MB | Max files: 10

@@ -83,7 +83,13 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
             href="/fast"
             className="text-foreground/80 font-medium transition-smooth hover:text-primary"
           >
-            Fast Upload
+            Fast
+          </Link>
+          <Link
+            href="/public"
+            className="text-foreground/80 font-medium transition-smooth hover:text-primary"
+          >
+            Public
           </Link>
         </nav>
 
@@ -148,6 +154,13 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
             onClick={() => setMobileMenuOpen(false)}
           >
             Fast Upload
+          </Link>
+          <Link
+            href="/public"
+            className="text-lg font-medium py-2 border-b border-border/50 transition-smooth hover:text-primary"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Public Upload
           </Link>
         </nav>
       </div>
