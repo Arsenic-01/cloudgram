@@ -19,10 +19,11 @@ I needed to print a document from my college lab’s PC, but there was no easy w
 ## 🌟 Features
 
 ✅ **Telegram API Storage** – Upload **10 files at once**, max **20MB per file**, with **end-to-end encryption**.  
-✅ **Supabase Database** - Stores the Telegram file **metadata** in a PostgreSQL database to ensure platform independence in case of a failure.
+✅ **Supabase Database** - Stores the Telegram file **metadata** in a PostgreSQL database to ensure platform independence in case of a failure.  
 ✅ **Appwrite Storage** – Upload **20 files at once**, max **50MB per file**, stored in an **S3 bucket**.  
 ✅ **Secure Authentication** – Sign in with **Google, Magic Link, or Username/Password** via **Clerk**.  
-✅ **Fast & Responsive** – Built with the latest web technologies for a smooth experience.
+✅ **Fast & Responsive** – Built with the latest web technologies for a smooth experience.  
+✅ **Anonymous Upload System** – Users can upload **one file at a time** on the `/public` route. After uploading, they receive a **unique 5-digit code**, which they can use to **download the file from any device** without logging in.
 
 ---
 
@@ -61,20 +62,23 @@ cd cloudgram
 npm install
 ```
 
-3️⃣ Set Up Environment Variables
-Create a .env.local file and add the following credentials:
+3️⃣ Set Up Environment Variables  
+Create a `.env.local` file and add the following credentials:
 
 ```
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-NEXT_PUBLIC_BOT_TOKEN=your_telegram_bot_token
-NEXT_PUBLIC_CHANNEL_ID=your_telegram_channel_id
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
-CLERK_SECRET_KEY=your_clerk_secret_key
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+NEXT_PUBLIC_BOT_TOKEN=
+NEXT_PUBLIC_CHANNEL_ID=
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
 NEXT_PUBLIC_APPWRITE_PROJECT_ID=
 NEXT_PUBLIC_APPWRITE_DB=
 NEXT_PUBLIC_APPWRITE_FILE_COLLECTION_ID=
+APPWRITE_API_KEY=
 NEXT_PUBLIC_APPWRITE_STORAGE_BUCKET=
+NEXT_PUBLIC_APPWRITE_PUBLIC_COLLECTION_ID=
 ```
 
 4️⃣ Run the Development Server
@@ -90,11 +94,11 @@ to view the app locally.
 
 ## 🤝 Contributing
 
-Fork the repository
-Create a new branch: git checkout -b feature-branch
-Commit your changes: git commit -m "Added new feature"
-Push to your branch: git push origin feature-branch
-Submit a pull request 🎉
+1. Fork the repository  
+2. Create a new branch: `git checkout -b feature-branch`  
+3. Commit your changes: `git commit -m "Added new feature"`  
+4. Push to your branch: `git push origin feature-branch`  
+5. Submit a pull request 🎉  
 
 ---
 
@@ -108,4 +112,4 @@ This project is licensed under the MIT License.
 
 📧 **Email:** [vedbhor25@gmail.com](mailto:vedbhor25@gmail.com)  
 🐦 **Twitter:** [@arsenic_dev](https://x.com/arsenic_dev)  
-👨‍💻 **LinkedIn:** [Vedant Bhor](https://www.linkedin.com/in/vedant-bhor-39287828b/)
+👨‍💻 **LinkedIn:** [Vedant Bhor](https://www.linkedin.com/in/vedant-bhor-39287828b/)  
